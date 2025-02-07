@@ -61,21 +61,18 @@ class _GetDisplayMediaSampleState extends State<GetDisplayMediaSample> {
               const androidConfig = FlutterBackgroundAndroidConfig(
                 notificationTitle: 'Screen Sharing',
                 notificationText: 'LiveKit Example is sharing the screen.',
-                notificationImportance: AndroidNotificationImportance.Default,
-                notificationIcon: AndroidResource(
-                    name: 'livekit_ic_launcher', defType: 'mipmap'),
+                notificationImportance: AndroidNotificationImportance.high,
+                notificationIcon: AndroidResource(name: 'livekit_ic_launcher', defType: 'mipmap'),
               );
-              hasPermissions = await FlutterBackground.initialize(
-                  androidConfig: androidConfig);
+              hasPermissions = await FlutterBackground.initialize(androidConfig: androidConfig);
             }
-            if (hasPermissions &&
-                !FlutterBackground.isBackgroundExecutionEnabled) {
+            if (hasPermissions && !FlutterBackground.isBackgroundExecutionEnabled) {
               await FlutterBackground.enableBackgroundExecution();
             }
           } catch (e) {
             if (!isRetry) {
-              return await Future<void>.delayed(const Duration(seconds: 1),
-                  () => requestBackgroundPermission(true));
+              return await Future<void>.delayed(
+                  const Duration(seconds: 1), () => requestBackgroundPermission(true));
             }
             print('could not publish video: $e');
           }
@@ -94,8 +91,7 @@ class _GetDisplayMediaSampleState extends State<GetDisplayMediaSample> {
     });
 
     try {
-      var stream =
-          await navigator.mediaDevices.getDisplayMedia(<String, dynamic>{
+      var stream = await navigator.mediaDevices.getDisplayMedia(<String, dynamic>{
         'video': selected_source_ == null
             ? true
             : {
@@ -104,8 +100,7 @@ class _GetDisplayMediaSampleState extends State<GetDisplayMediaSample> {
               }
       });
       stream.getVideoTracks()[0].onEnded = () {
-        print(
-            'By adding a listener on onEnded you can: 1) catch stop video sharing on Web');
+        print('By adding a listener on onEnded you can: 1) catch stop video sharing on Web');
       };
 
       _localStream = stream;
@@ -144,8 +139,8 @@ class _GetDisplayMediaSampleState extends State<GetDisplayMediaSample> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('GetDisplayMedia source: ' +
-            (selected_source_ != null ? selected_source_!.name : '')),
+        title: Text(
+            'GetDisplayMedia source: ' + (selected_source_ != null ? selected_source_!.name : '')),
         actions: [],
       ),
       body: OrientationBuilder(

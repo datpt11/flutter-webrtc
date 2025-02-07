@@ -28,7 +28,8 @@ class RTCFactoryNative extends RTCFactory {
   }
 
   @override
-  Future<RTCPeerConnection> createPeerConnection(Map<String, dynamic> configuration,
+  Future<RTCPeerConnection> createPeerConnection(
+      Map<String, dynamic> configuration,
       [Map<String, dynamic> constraints = const {}]) async {
     var defaultConstraints = <String, dynamic>{
       'mandatory': {},
@@ -36,12 +37,13 @@ class RTCFactoryNative extends RTCFactory {
         {'DtlsSrtpKeyAgreement': true},
       ],
     };
-    var selectedConstraints = constraints.isEmpty ? defaultConstraints : constraints;
 
-    selectedConstraints["googIPv6"] = false;
     final response = await WebRTC.invokeMethod(
       'createPeerConnection',
-      <String, dynamic>{'configuration': configuration, 'constraints': selectedConstraints},
+      <String, dynamic>{
+        'configuration': configuration,
+        'constraints': constraints.isEmpty ? defaultConstraints : constraints
+      },
     );
 
     String peerConnectionId = response['peerConnectionId'];
@@ -62,7 +64,8 @@ class RTCFactoryNative extends RTCFactory {
   Navigator get navigator => NavigatorNative.instance;
 
   @override
-  FrameCryptorFactory get frameCryptorFactory => FrameCryptorFactoryImpl.instance;
+  FrameCryptorFactory get frameCryptorFactory =>
+      FrameCryptorFactoryImpl.instance;
 
   @override
   Future<RTCRtpCapabilities> getRtpReceiverCapabilities(String kind) async {
@@ -87,9 +90,11 @@ class RTCFactoryNative extends RTCFactory {
   }
 }
 
-Future<RTCPeerConnection> createPeerConnection(Map<String, dynamic> configuration,
+Future<RTCPeerConnection> createPeerConnection(
+    Map<String, dynamic> configuration,
     [Map<String, dynamic> constraints = const {}]) async {
-  return RTCFactoryNative.instance.createPeerConnection(configuration, constraints);
+  return RTCFactoryNative.instance
+      .createPeerConnection(configuration, constraints);
 }
 
 Future<MediaStream> createLocalMediaStream(String label) async {

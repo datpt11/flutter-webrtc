@@ -2,14 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-
 import 'package:webrtc_interface/webrtc_interface.dart';
 
 import '../helper.dart';
 import 'utils.dart';
 
-class RTCVideoRenderer extends ValueNotifier<RTCVideoValue>
-    implements VideoRenderer {
+class RTCVideoRenderer extends ValueNotifier<RTCVideoValue> implements VideoRenderer {
   RTCVideoRenderer() : super(RTCVideoValue.empty);
   int? _textureId;
   bool _disposed = false;
@@ -58,9 +56,7 @@ class RTCVideoRenderer extends ValueNotifier<RTCVideoValue>
       'streamId': stream?.id ?? '',
       'ownerTag': stream?.ownerTag ?? ''
     }).then((_) {
-      value = (stream == null)
-          ? RTCVideoValue.empty
-          : value.copyWith(renderVideo: renderVideo);
+      value = (stream == null) ? RTCVideoValue.empty : value.copyWith(renderVideo: renderVideo);
     }).catchError((e) {
       print('Got exception for RTCVideoRenderer::setSrcObject: ${e.message}');
     }, test: (e) => e is PlatformException);
@@ -80,9 +76,7 @@ class RTCVideoRenderer extends ValueNotifier<RTCVideoValue>
         'ownerTag': stream?.ownerTag ?? '',
         'trackId': trackId ?? '0'
       });
-      value = (stream == null)
-          ? RTCVideoValue.empty
-          : value.copyWith(renderVideo: renderVideo);
+      value = (stream == null) ? RTCVideoValue.empty : value.copyWith(renderVideo: renderVideo);
     } on PlatformException catch (e) {
       throw 'Got exception for RTCVideoRenderer::setSrcObject: textureId $oldTextureId [disposed: $_disposed] with stream ${stream?.id}, error: ${e.message}';
     }
@@ -113,15 +107,12 @@ class RTCVideoRenderer extends ValueNotifier<RTCVideoValue>
     final Map<dynamic, dynamic> map = event;
     switch (map['event']) {
       case 'didTextureChangeRotation':
-        value =
-            value.copyWith(rotation: map['rotation'], renderVideo: renderVideo);
+        value = value.copyWith(rotation: map['rotation'], renderVideo: renderVideo);
         onResize?.call();
         break;
       case 'didTextureChangeVideoSize':
         value = value.copyWith(
-            width: 0.0 + map['width'],
-            height: 0.0 + map['height'],
-            renderVideo: renderVideo);
+            width: 0.0 + map['width'], height: 0.0 + map['height'], renderVideo: renderVideo);
         onResize?.call();
         break;
       case 'didFirstFrameRendered':
@@ -152,8 +143,7 @@ class RTCVideoRenderer extends ValueNotifier<RTCVideoValue>
       throw Exception('Can\'t be muted: The MediaStream is null');
     }
     if (_srcObject!.ownerTag != 'local') {
-      throw Exception(
-          'You\'re trying to mute a remote track, this is not supported');
+      throw Exception('You\'re trying to mute a remote track, this is not supported');
     }
     if (_srcObject!.getAudioTracks().isEmpty) {
       throw Exception('Can\'t be muted: The MediaStreamTrack(audio) is empty');
@@ -172,4 +162,7 @@ class RTCVideoRenderer extends ValueNotifier<RTCVideoValue>
     }
     return true;
   }
+
+  @override
+  RTCVideoValue get videoValue => value;
 }
